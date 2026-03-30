@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ReStock Reminder - App Store Screenshots</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f1f5f9; padding: 40px; }
+    h1 { text-align: center; margin-bottom: 40px; }
+    .instructions { text-align: center; color: #64748b; margin-bottom: 40px; }
+    .screenshot { width: 1200px; height: 900px; margin: 0 auto 60px; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.12); position: relative; }
+    .screenshot-label { text-align: center; font-size: 14px; color: #94a3b8; margin-bottom: 12px; }
+
+    /* Shopify Admin Chrome */
+    .admin-bar { height: 56px; background: #1a1a2e; display: flex; align-items: center; padding: 0 20px; }
+    .admin-logo { color: #95bf47; font-weight: 700; font-size: 18px; }
+    .admin-store { color: #94a3b8; font-size: 13px; margin-left: 20px; }
+    .admin-body { display: flex; height: calc(100% - 56px); }
+    .admin-sidebar { width: 220px; background: #f8fafc; border-right: 1px solid #e2e8f0; padding: 16px 0; }
+    .sidebar-item { padding: 8px 20px; font-size: 13px; color: #475569; }
+    .sidebar-item.active { background: #eff6ff; color: #2563eb; font-weight: 600; border-right: 3px solid #2563eb; }
+    .admin-content { flex: 1; padding: 32px; overflow: hidden; background: #f8fafc; }
+
+    /* App Content */
+    .app-nav { display: flex; gap: 4px; margin-bottom: 24px; }
+    .app-tab { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #475569; background: white; border: 1px solid #e2e8f0; }
+    .app-tab.active { background: #eff6ff; color: #2563eb; border-color: #2563eb; }
+    .page-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
+    .plan-badge { padding: 4px 14px; border-radius: 16px; font-size: 12px; font-weight: 600; background: #fef3c7; color: #92400e; }
+
+    /* Stats */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+    .stat { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px; }
+    .stat-val { font-size: 28px; font-weight: 800; color: #2563eb; }
+    .stat-label { font-size: 12px; font-weight: 600; color: #0f172a; margin-top: 4px; }
+    .stat-sub { font-size: 11px; color: #94a3b8; }
+
+    /* Card */
+    .card { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+    .card h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
+
+    /* Usage bar */
+    .usage-bar { height: 8px; background: #e2e8f0; border-radius: 4px; margin-bottom: 6px; }
+    .usage-fill { height: 100%; width: 36%; background: #2563eb; border-radius: 4px; }
+    .usage-text { font-size: 12px; color: #64748b; }
+
+    /* Product list */
+    .product-row { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+    .product-img { width: 40px; height: 40px; border-radius: 8px; background: #e2e8f0; }
+    .product-img.coffee { background: linear-gradient(135deg, #92400e, #d97706); }
+    .product-img.vitamin { background: linear-gradient(135deg, #065f46, #10b981); }
+    .product-img.cream { background: linear-gradient(135deg, #7c3aed, #a78bfa); }
+    .product-img.pet { background: linear-gradient(135deg, #ea580c, #fb923c); }
+    .product-name { flex: 1; font-size: 13px; font-weight: 600; }
+    .product-interval { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #64748b; }
+    .product-interval input { width: 48px; padding: 4px; border: 1px solid #e2e8f0; border-radius: 4px; text-align: center; font-size: 12px; }
+    .toggle-on { width: 36px; height: 20px; background: #2563eb; border-radius: 10px; position: relative; }
+    .toggle-on::after { content: ''; position: absolute; width: 14px; height: 14px; background: white; border-radius: 50%; top: 3px; right: 3px; }
+
+    /* Recent items */
+    .recent-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 12px; }
+    .recent-email { font-weight: 500; color: #0f172a; }
+    .recent-product { color: #64748b; }
+    .recent-date { color: #94a3b8; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+    .badge-sent { background: #dbeafe; color: #1e40af; }
+    .badge-opened { background: #d1fae5; color: #065f46; }
+    .badge-clicked { background: #fef3c7; color: #92400e; }
+
+    /* Settings */
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 12px; font-weight: 600; margin-bottom: 4px; color: #0f172a; }
+    .form-input { width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13px; font-family: inherit; }
+    .form-textarea { width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13px; font-family: inherit; height: 80px; resize: none; }
+    .btn-blue { padding: 8px 20px; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; }
+
+    /* Email preview */
+    .email-preview { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 24px; max-width: 400px; }
+    .email-preview h4 { font-size: 16px; margin-bottom: 12px; }
+    .email-preview p { font-size: 13px; color: #475569; margin-bottom: 8px; line-height: 1.5; }
+    .email-btn { display: inline-block; padding: 10px 20px; background: #2563eb; color: white; border-radius: 6px; font-size: 13px; font-weight: 600; text-decoration: none; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <h1>ReStock Reminder - App Store Screenshots</h1>
+  <p class="instructions">Right-click each screenshot → "Save image as" or use browser screenshot tool (1200x900px)</p>
+
+  <!-- Screenshot 1: Dashboard -->
+  <p class="screenshot-label">Screenshot 1: Dashboard</p>
+  <div class="screenshot" id="ss1">
+    <div class="admin-bar">
+      <span class="admin-logo">shopify</span>
+      <span class="admin-store">my-store</span>
+    </div>
+    <div class="admin-body">
+      <div class="admin-sidebar">
+        <div class="sidebar-item">Home</div>
+        <div class="sidebar-item">Orders</div>
+        <div class="sidebar-item">Products</div>
+        <div class="sidebar-item">Customers</div>
+        <div class="sidebar-item">Analytics</div>
+        <div class="sidebar-item" style="margin-top:16px; font-size:11px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;">Apps</div>
+        <div class="sidebar-item active">ReStock Reminder</div>
+      </div>
+      <div class="admin-content">
+        <div class="app-nav">
+          <div class="app-tab active">Dashboard</div>
+          <div class="app-tab">Products</div>
+          <div class="app-tab">History</div>
+          <div class="app-tab">Settings</div>
+        </div>
+        <div class="page-title">Dashboard <span class="plan-badge">Pro Plan</span></div>
+        <div class="stats">
+          <div class="stat"><div class="stat-val">1,247</div><div class="stat-label">Reminders Sent</div><div class="stat-sub">183 this month</div></div>
+          <div class="stat"><div class="stat-val">42</div><div class="stat-label">Pending</div><div class="stat-sub">Due for sending</div></div>
+          <div class="stat"><div class="stat-val">89</div><div class="stat-label">Tracked Products</div><div class="stat-sub">With reminders enabled</div></div>
+          <div class="stat"><div class="stat-val">34.2%</div><div class="stat-label">Open Rate</div><div class="stat-sub">12.8% click rate</div></div>
+        </div>
+        <div class="card">
+          <h3>Monthly Usage</h3>
+          <div class="usage-bar"><div class="usage-fill"></div></div>
+          <div class="usage-text">183 / unlimited reminders</div>
+        </div>
+        <div class="card">
+          <h3>Recent Reminders</h3>
+          <div class="recent-row"><span class="recent-email">sarah@example.com</span><span class="recent-product">Premium Coffee Beans</span><span class="badge badge-clicked">Clicked</span><span class="recent-date">Mar 29</span></div>
+          <div class="recent-row"><span class="recent-email">mike@example.com</span><span class="recent-product">Vitamin D3 Supplement</span><span class="badge badge-opened">Opened</span><span class="recent-date">Mar 29</span></div>
+          <div class="recent-row"><span class="recent-email">jen@example.com</span><span class="recent-product">Lavender Face Cream</span><span class="badge badge-sent">Sent</span><span class="recent-date">Mar 28</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screenshot 2: Products -->
+  <p class="screenshot-label">Screenshot 2: Product Reminder Settings</p>
+  <div class="screenshot" id="ss2">
+    <div class="admin-bar">
+      <span class="admin-logo">shopify</span>
+      <span class="admin-store">my-store</span>
+    </div>
+    <div class="admin-body">
+      <div class="admin-sidebar">
+        <div class="sidebar-item">Home</div>
+        <div class="sidebar-item">Orders</div>
+        <div class="sidebar-item">Products</div>
+        <div class="sidebar-item">Customers</div>
+        <div class="sidebar-item">Analytics</div>
+        <div class="sidebar-item" style="margin-top:16px; font-size:11px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;">Apps</div>
+        <div class="sidebar-item active">ReStock Reminder</div>
+      </div>
+      <div class="admin-content">
+        <div class="app-nav">
+          <div class="app-tab">Dashboard</div>
+          <div class="app-tab active">Products</div>
+          <div class="app-tab">History</div>
+          <div class="app-tab">Settings</div>
+        </div>
+        <div class="page-title">Product Reminders</div>
+        <p style="color:#64748b; font-size:13px; margin-bottom:20px;">Set reorder intervals for each product. Customers receive a reminder when it's time to restock.</p>
+        <div class="card">
+          <div class="product-row">
+            <div class="product-img coffee"></div>
+            <div class="product-name">Premium Coffee Beans 500g</div>
+            <div class="product-interval">Every <input value="30"> days</div>
+            <div class="toggle-on"></div>
+          </div>
+          <div class="product-row">
+            <div class="product-img vitamin"></div>
+            <div class="product-name">Vitamin D3 Supplement 60ct</div>
+            <div class="product-interval">Every <input value="60"> days</div>
+            <div class="toggle-on"></div>
+          </div>
+          <div class="product-row">
+            <div class="product-img cream"></div>
+            <div class="product-name">Lavender Face Cream 50ml</div>
+            <div class="product-interval">Every <input value="45"> days</div>
+            <div class="toggle-on"></div>
+          </div>
+          <div class="product-row">
+            <div class="product-img pet"></div>
+            <div class="product-name">Organic Dog Food 5kg</div>
+            <div class="product-interval">Every <input value="21"> days</div>
+            <div class="toggle-on"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screenshot 3: Email Preview -->
+  <p class="screenshot-label">Screenshot 3: Reminder Email</p>
+  <div class="screenshot" id="ss3">
+    <div class="admin-bar">
+      <span class="admin-logo">shopify</span>
+      <span class="admin-store">my-store</span>
+    </div>
+    <div class="admin-body">
+      <div class="admin-sidebar">
+        <div class="sidebar-item">Home</div>
+        <div class="sidebar-item">Orders</div>
+        <div class="sidebar-item">Products</div>
+        <div class="sidebar-item">Customers</div>
+        <div class="sidebar-item">Analytics</div>
+        <div class="sidebar-item" style="margin-top:16px; font-size:11px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;">Apps</div>
+        <div class="sidebar-item active">ReStock Reminder</div>
+      </div>
+      <div class="admin-content" style="display:flex; gap:32px;">
+        <div style="flex:1;">
+          <div class="app-nav">
+            <div class="app-tab">Dashboard</div>
+            <div class="app-tab">Products</div>
+            <div class="app-tab">History</div>
+            <div class="app-tab active">Settings</div>
+          </div>
+          <div class="page-title">Email Settings</div>
+          <div class="form-group">
+            <div class="form-label">Email Subject</div>
+            <input class="form-input" value="Time to reorder {product}?">
+          </div>
+          <div class="form-group">
+            <div class="form-label">Email Body</div>
+            <textarea class="form-textarea">Hi {customer_name},
+
+It's been {days} days since you purchased {product_title}. Running low?
+
+Reorder now: {product_url}
+
+Thanks for being a loyal customer!
+{shop_name}</textarea>
+          </div>
+          <button class="btn-blue">Save Settings</button>
+        </div>
+        <div style="flex:1; padding-top: 40px;">
+          <p style="font-size:12px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:12px;">Email Preview</p>
+          <div class="email-preview">
+            <h4>Time to restock?</h4>
+            <p>Hi Sarah,</p>
+            <p>It's been 30 days since you purchased <strong>Premium Coffee Beans 500g</strong>. Running low?</p>
+            <p>Reorder now and keep your supply stocked.</p>
+            <a class="email-btn" href="#">Reorder Premium Coffee Beans 500g</a>
+            <p style="margin-top:16px; font-size:11px; color:#94a3b8;">Sent by My Coffee Store via ReStock Reminder</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screenshot 4: How it works -->
+  <p class="screenshot-label">Screenshot 4: How It Works (Key Visual)</p>
+  <div class="screenshot" id="ss4" style="background: linear-gradient(135deg, #1e40af, #7c3aed); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center;">
+    <div style="font-size: 48px; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.02em;">Boost Repeat Purchases</div>
+    <div style="font-size: 20px; opacity: 0.8; margin-bottom: 48px;">Automatically remind customers when it's time to reorder</div>
+    <div style="display: flex; gap: 40px;">
+      <div style="text-align: center;">
+        <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.15); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 36px;">1</div>
+        <div style="font-size: 16px; font-weight: 700;">Set Intervals</div>
+        <div style="font-size: 13px; opacity: 0.7; margin-top: 4px;">30 days for coffee<br>60 days for vitamins</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.15); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 36px;">2</div>
+        <div style="font-size: 16px; font-weight: 700;">Auto-Track Orders</div>
+        <div style="font-size: 13px; opacity: 0.7; margin-top: 4px;">Every order is<br>automatically tracked</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.15); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 36px;">3</div>
+        <div style="font-size: 16px; font-weight: 700;">Send Reminders</div>
+        <div style="font-size: 13px; opacity: 0.7; margin-top: 4px;">Perfectly timed emails<br>drive repeat sales</div>
+      </div>
+    </div>
+    <div style="margin-top: 48px; padding: 16px 32px; background: rgba(255,255,255,0.15); border-radius: 12px; font-size: 18px;">
+      Free: 50 reminders/mo &nbsp;•&nbsp; Pro: $9.99/mo unlimited
+    </div>
+  </div>
+
+</body>
+</html>
