@@ -5,19 +5,40 @@
 (function () {
   'use strict';
 
-  // Get shop domain from URL params or Shopify App Bridge
+  // Get shop domain from URL params
   const urlParams = new URLSearchParams(window.location.search);
   const shopDomain = urlParams.get('shop') || '';
 
-  // API helper
+  // Initialize Shopify App Bridge
+  let shopifyBridge = null;
+  if (window.shopify) {
+    shopifyBridge = window.shopify;
+  }
+
+  // Get session token from App Bridge
+  async function getSessionToken() {
+    if (shopifyBridge && shopifyBridge.idToken) {
+      try {
+        return await shopifyBridge.idToken();
+      } catch (e) {
+        console.warn('Failed to get session token:', e);
+      }
+    }
+    return null;
+  }
+
+  // API helper with session token auth
   async function api(method, path, body) {
-    const opts = {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Shop-Domain': shopDomain,
-      },
+    const token = await getSessionToken();
+    const headers = {
+      'Content-Type': 'application/json',
+      'X-Shop-Domain': shopDomain,
     };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const opts = { method, headers };
     if (body) opts.body = JSON.stringify(body);
 
     const res = await fetch(`/api${path}?shop=${shopDomain}`, opts);
