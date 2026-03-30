@@ -116,4 +116,70 @@ router.post('/app-uninstalled', async (req, res) => {
   }
 });
 
+// Mandatory compliance webhooks
+
+// POST /webhooks/customers-data-request
+router.post('/customers-data-request', async (req, res) => {
+  if (!verifyWebhook(req)) {
+    return res.status(401).send('Invalid HMAC');
+  }
+  res.status(200).send('OK');
+  console.log('Received customers/data_request webhook');
+});
+
+// POST /webhooks/customers-redact
+router.post('/customers-redact', async (req, res) => {
+  if (!verifyWebhook(req)) {
+    return res.status(401).send('Invalid HMAC');
+  }
+  res.status(200).send('OK');
+
+  try {
+    const payload = JSON.parse(req.body.toString());
+    const shopDomain = payload.shop_domain;
+    const customerId = payload.customer?.id?.toString();
+
+    if (shopDomain && customerId) {
+      const shop = await prisma.shop.findUnique({ where: { domain: shopDomain } });
+      if (shop) {
+        await prisma.orderRecord.deleteMany({
+          where: { shopId: shop.id, customerId },
+        });
+        await prisma.reminder.deleteMany({
+          where: { shopId: shop.id, customerId },
+        });
+      }
+    }
+    console.log(`Customer data redacted for ${customerId}`);
+  } catch (err) {
+    console.error('Error processing customers/redact:', err);
+  }
+});
+
+// POST /webhooks/shop-redact
+router.post('/shop-redact', async (req, res) => {
+  if (!verifyWebhook(req)) {
+    return res.status(401).send('Invalid HMAC');
+  }
+  res.status(200).send('OK');
+
+  try {
+    const payload = JSON.parse(req.body.toString());
+    const shopDomain = payload.shop_domain;
+
+    if (shopDomain) {
+      const shop = await prisma.shop.findUnique({ where: { domain: shopDomain } });
+      if (shop) {
+        await prisma.reminder.deleteMany({ where: { shopId: shop.id } });
+        await prisma.orderRecord.deleteMany({ where: { shopId: shop.id } });
+        await prisma.productReminder.deleteMany({ where: { shopId: shop.id } });
+        await prisma.shop.delete({ where: { id: shop.id } });
+      }
+    }
+    console.log(`Shop data redacted for ${shopDomain}`);
+  } catch (err) {
+    console.error('Error processing shop/redact:', err);
+  }
+});
+
 export default router;
