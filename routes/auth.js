@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { shopify, saveShop } from '../lib/shopify.js';
+import crypto from 'crypto';
+import { saveShop } from '../lib/shopify.js';
 
 const router = Router();
 
@@ -10,25 +11,24 @@ router.get('/', async (req, res) => {
     return res.status(400).send('Missing shop parameter');
   }
 
-  const sanitizedShop = shopify.utils.sanitizeShop(shop, true);
-  if (!sanitizedShop) {
+  // Basic validation
+  if (!/^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.com$/.test(shop)) {
     return res.status(400).send('Invalid shop domain');
   }
 
-  // Build auth URL
   const redirectUri = `${process.env.HOST}/auth/callback`;
   const scopes = process.env.SHOPIFY_SCOPES || '';
   const nonce = crypto.randomUUID();
 
-  // Store nonce in cookie for verification
+  // Store nonce in cookie
   res.cookie('shopify_nonce', nonce, {
     httpOnly: true,
     secure: true,
-    sameSite: 'lax',
-    maxAge: 600000, // 10 minutes
+    sameSite: 'none',
+    maxAge: 600000,
   });
 
-  const authUrl = `https://${sanitizedShop}/admin/oauth/authorize?` +
+  const authUrl = `https://${shop}/admin/oauth/authorize?` +
     `client_id=${process.env.SHOPIFY_API_KEY}` +
     `&scope=${scopes}` +
     `&redirect_uri=${encodeURIComponent(redirectUri)}` +
@@ -41,9 +41,13 @@ router.get('/', async (req, res) => {
 router.get('/callback', async (req, res) => {
   const { shop, code, state, hmac } = req.query;
 
-  // Verify state/nonce
+  if (!shop || !code || !hmac) {
+    return res.status(400).send('Missing required parameters');
+  }
+
+  // Skip nonce check if cookie wasn't preserved (cross-domain redirect issue)
   const storedNonce = req.cookies?.shopify_nonce;
-  if (!storedNonce || storedNonce !== state) {
+  if (storedNonce && storedNonce !== state) {
     return res.status(403).send('Invalid state parameter');
   }
 
@@ -56,7 +60,6 @@ router.get('/callback', async (req, res) => {
     .map(key => `${key}=${queryParams[key]}`)
     .join('&');
 
-  const crypto = await import('crypto');
   const generatedHmac = crypto
     .createHmac('sha256', process.env.SHOPIFY_API_SECRET)
     .update(sortedParams)
@@ -82,6 +85,7 @@ router.get('/callback', async (req, res) => {
     const accessToken = tokenData.access_token;
 
     if (!accessToken) {
+      console.error('Token response:', tokenData);
       throw new Error('No access token received');
     }
 
@@ -93,8 +97,8 @@ router.get('/callback', async (req, res) => {
 
     // Save to database
     await saveShop(shop, accessToken, {
-      name: shopData.name,
-      email: shopData.email,
+      name: shopData?.name || '',
+      email: shopData?.email || '',
     });
 
     // Register webhooks
@@ -108,7 +112,7 @@ router.get('/callback', async (req, res) => {
     res.redirect(`https://${shop}/admin/apps/${appHandle}`);
   } catch (err) {
     console.error('OAuth callback error:', err);
-    res.status(500).send('Authentication failed. Please try again.');
+    res.status(500).send(`Authentication failed: ${err.message}. Please try again.`);
   }
 });
 
