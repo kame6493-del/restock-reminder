@@ -24,6 +24,18 @@ app.use(compression());
 app.use(express.json());
 app.use(cookieParser());
 
+// Debug endpoint (remove in production)
+app.get('/debug/env', (req, res) => {
+  const dbUrl = process.env.DATABASE_URL || 'NOT SET';
+  const masked = dbUrl.substring(0, 15) + '...' + dbUrl.substring(dbUrl.length - 30);
+  res.json({
+    DATABASE_URL_length: dbUrl.length,
+    DATABASE_URL_preview: masked,
+    DATABASE_URL_starts: dbUrl.substring(0, 25),
+    HOST: process.env.HOST,
+  });
+});
+
 // Auth routes (OAuth flow)
 app.use('/auth', authRoutes);
 
