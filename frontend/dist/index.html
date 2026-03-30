@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReStock Reminder</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Navigation -->
+    <nav class="nav">
+      <div class="nav-brand">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
+        ReStock Reminder
+      </div>
+      <div class="nav-links">
+        <a href="#" class="nav-link active" data-page="dashboard">Dashboard</a>
+        <a href="#" class="nav-link" data-page="products">Products</a>
+        <a href="#" class="nav-link" data-page="reminders">History</a>
+        <a href="#" class="nav-link" data-page="settings">Settings</a>
+      </div>
+    </nav>
+
+    <!-- Dashboard Page -->
+    <div id="page-dashboard" class="page active">
+      <div class="page-header">
+        <h1>Dashboard</h1>
+        <div class="plan-badge" id="plan-badge">Free Plan</div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-sent">0</div>
+          <div class="stat-label">Reminders Sent</div>
+          <div class="stat-sub" id="stat-month">0 this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-pending">0</div>
+          <div class="stat-label">Pending</div>
+          <div class="stat-sub">Due for sending</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-products">0</div>
+          <div class="stat-label">Tracked Products</div>
+          <div class="stat-sub">With reminders enabled</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-open-rate">0%</div>
+          <div class="stat-label">Open Rate</div>
+          <div class="stat-sub" id="stat-click-rate">0% click rate</div>
+        </div>
+      </div>
+
+      <!-- Plan Usage -->
+      <div class="card" id="usage-card">
+        <h3>Monthly Usage</h3>
+        <div class="usage-bar">
+          <div class="usage-fill" id="usage-fill" style="width: 0%"></div>
+        </div>
+        <p class="usage-text" id="usage-text">0 / 50 reminders used</p>
+        <button class="btn btn-primary" id="btn-upgrade" style="display:none">Upgrade to Pro — $9.99/mo</button>
+      </div>
+
+      <!-- Recent Reminders -->
+      <div class="card">
+        <h3>Recent Reminders</h3>
+        <div id="recent-list" class="recent-list">
+          <p class="empty-state">No reminders sent yet. Reminders will be sent automatically when customers' reorder dates arrive.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Page -->
+    <div id="page-products" class="page">
+      <div class="page-header">
+        <h1>Product Reminders</h1>
+        <p class="page-desc">Set reorder intervals for each product. Customers will receive a reminder email when it's time to restock.</p>
+      </div>
+
+      <div class="card">
+        <div class="product-controls">
+          <div class="search-box">
+            <input type="text" id="product-search" placeholder="Search products...">
+          </div>
+          <div class="bulk-actions">
+            <label>Default interval:</label>
+            <input type="number" id="default-interval" value="30" min="1" max="365">
+            <span>days</span>
+            <button class="btn btn-secondary" id="btn-apply-all">Apply to All</button>
+          </div>
+        </div>
+
+        <div id="products-list" class="products-list">
+          <p class="empty-state">Loading products...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reminders History Page -->
+    <div id="page-reminders" class="page">
+      <div class="page-header">
+        <h1>Reminder History</h1>
+      </div>
+
+      <div class="card">
+        <table class="data-table" id="reminders-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Product</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="reminders-tbody">
+            <tr><td colspan="4" class="empty-state">No reminders sent yet</td></tr>
+          </tbody>
+        </table>
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </div>
+
+    <!-- Settings Page -->
+    <div id="page-settings" class="page">
+      <div class="page-header">
+        <h1>Settings</h1>
+      </div>
+
+      <div class="card">
+        <h3>Email Settings</h3>
+        <div class="form-group">
+          <label class="toggle-label">
+            <input type="checkbox" id="email-enabled" checked>
+            <span>Enable reminder emails</span>
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="email-subject">Email Subject</label>
+          <input type="text" id="email-subject" value="Time to reorder {product}?" class="input-full">
+          <small>Use {product} for product name</small>
+        </div>
+        <div class="form-group">
+          <label for="email-body">Email Body</label>
+          <textarea id="email-body" rows="8" class="input-full"></textarea>
+          <small>Variables: {customer_name}, {product_title}, {days}, {product_url}, {shop_name}</small>
+        </div>
+        <button class="btn btn-primary" id="btn-save-settings">Save Settings</button>
+      </div>
+
+      <div class="card">
+        <h3>Subscription</h3>
+        <div id="billing-info">
+          <p>Current plan: <strong id="current-plan">Free</strong></p>
+          <p>50 reminders per month. Upgrade for unlimited.</p>
+          <button class="btn btn-primary" id="btn-subscribe">Upgrade to Pro — $9.99/mo (7-day free trial)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

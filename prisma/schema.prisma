@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Installed shops
+model Shop {
+  id            String   @id @default(cuid())
+  domain        String   @unique // myshop.myshopify.com
+  accessToken   String
+  name          String   @default("")
+  email         String   @default("")
+  plan          String   @default("free") // free | pro
+  chargeId      String?  // Shopify billing charge ID
+  installedAt   DateTime @default(now())
+  uninstalledAt DateTime?
+
+  // Settings
+  defaultInterval Int    @default(30) // days
+  emailEnabled    Boolean @default(true)
+  emailSubject    String  @default("Time to reorder {product}?")
+  emailBody       String  @default("")
+
+  // Relations
+  products  ProductReminder[]
+  reminders Reminder[]
+  orders    OrderRecord[]
+}
+
+// Per-product reminder settings
+model ProductReminder {
+  id         String @id @default(cuid())
+  shopId     String
+  productId  String // Shopify product ID
+  title      String
+  imageUrl   String @default("")
+  interval   Int    // days until reminder
+  enabled    Boolean @default(true)
+
+  shop Shop @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@unique([shopId, productId])
+}
+
+// Tracked orders
+model OrderRecord {
+  id          String   @id @default(cuid())
+  shopId      String
+  orderId     String   // Shopify order ID
+  customerId  String   // Shopify customer ID
+  email       String
+  productId   String   // Shopify product ID
+  productTitle String
+  purchasedAt DateTime
+  reminderDue DateTime // When to send reminder
+  reminded    Boolean  @default(false)
+
+  shop Shop @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@unique([shopId, orderId, productId])
+  @@index([reminderDue, reminded])
+}
+
+// Sent reminders log
+model Reminder {
+  id         String   @id @default(cuid())
+  shopId     String
+  email      String
+  productId  String
+  productTitle String
+  sentAt     DateTime @default(now())
+  opened     Boolean  @default(false)
+  clicked    Boolean  @default(false)
+  converted  Boolean  @default(false) // Led to a new order
+
+  shop Shop @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@index([shopId, sentAt])
+}
